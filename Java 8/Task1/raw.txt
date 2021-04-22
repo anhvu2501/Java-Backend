@@ -1,0 +1,3 @@
+{"user_id":"97249675913092812","like_point":3,"view_point":0,"question_point":0,"comment_point":0,"answer_point":0,"blog_point":0,"chat_point":0,"active_point":3,"time":1615309200000,"_id":"97249675913092812:10-03-2021"}
+{"user_id":"97249675913093073","like_point":3,"view_point":0,"question_point":0,"comment_point":0,"answer_point":0,"blog_point":0,"chat_point":0,"active_point":3,"time":1615309200000,"_id":"97249675913093073:10-03-2021"}
+{"user_id":"97249675911019648","like_point":3,"view_point":0,"question_point":0,"comment_point":0,"answer_point":0,"blog_point":0,"chat_point":0,"active_point":3,"time":1615309200000,"_id":"97249675911019648:10-03-2021"}

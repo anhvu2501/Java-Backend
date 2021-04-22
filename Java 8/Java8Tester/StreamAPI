@@ -1,0 +1,12 @@
+forEach(): loops over the stream elements, calling the supplied function on each element
+map(): produces a new stream after applying a function to each element of the original stream. The new stream could be of different type => generates one output for each input element
+collect(): gather the results of Stream to a Collection
+filter(): produces a new stream that contains elements of the original stream that pass a given test (specified by a Predicate)
+findFirst(): returns an Optional for the first entry in the stream
+flatMap(): flatten the data structure to simplify further operations => used to map multiple-output for each input
+sorted(): sort the elements in specified order
+generate(): accepts a Supplier<T> for element generation
+reduce(): combines all elements of Stream and produces single result
+allMatch(): returns true when all the elements in the stream meet provided condition
+nonMatch(): returns true when all the elements in the stream do not meet provided condition
+
