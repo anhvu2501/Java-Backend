@@ -15,7 +15,7 @@ public class HandlingData {
     public static void main(String[] args) throws ParseException {
         List<User> userList = new ArrayList<>();
         try {
-            String url = "/home/vuhta/Java Backend Intern/Java 8/Task1/user_point_active.txt";
+            String url = "/home/vuhta/Java Backend/Java 8/Task1/user_point_active.txt";
             FileInputStream fileInputStream = new FileInputStream(url);
             Scanner input = new Scanner(fileInputStream);
             while (input.hasNextLine()) {
@@ -134,61 +134,61 @@ public class HandlingData {
         // -> map<String,User>
 
 //
-        userList.stream()
-                .filter(user -> user.getActivePoint() >= 20 && user.getActivePoint() < 40)
-                .sorted(Comparator.comparing(User::getTime))
-                .forEach(user -> System.out.println(user.getUserId() + "\t"
-                        + user.getActivePoint() + "\t"
-                        + dateFormat.format(user.getTime())));
+//        userList.stream()
+//                .filter(user -> user.getActivePoint() >= 20 && user.getActivePoint() < 40)
+//                .sorted(Comparator.comparing(User::getTime))
+//                .forEach(user -> System.out.println(user.getUserId() + "\t"
+//                        + user.getActivePoint() + "\t"
+//                        + dateFormat.format(user.getTime())));
+//
+//        userList.stream()
+//                .filter(user -> user.getActivePoint() >= 40 && user.getActivePoint() < 60)
+//                .sorted(Comparator.comparing(User::getTime))
+//                .forEach(user -> System.out.println(user.getUserId() + "\t"
+//                        + user.getActivePoint() + "\t"
+//                        + dateFormat.format(user.getTime())));
+//
+//        userList.stream()
+//                .filter(user -> user.getActivePoint() >= 60 && user.getActivePoint() < 80)
+//                .sorted(Comparator.comparing(User::getTime))
+//                .forEach(user -> System.out.println(user.getUserId() + "\t"
+//                        + user.getActivePoint() + "\t"
+//                        + dateFormat.format(user.getTime())));
+//
+//        userList.stream()
+//                .filter(user -> user.getActivePoint() >= 80 && user.getActivePoint() < 100)
+//                .sorted(Comparator.comparing(User::getTime))
+//                .forEach(user -> System.out.println(user.getUserId() + "\t"
+//                        + user.getActivePoint() + "\t"
+//                        + dateFormat.format(user.getTime())));
 
-        userList.stream()
-                .filter(user -> user.getActivePoint() >= 40 && user.getActivePoint() < 60)
-                .sorted(Comparator.comparing(User::getTime))
-                .forEach(user -> System.out.println(user.getUserId() + "\t"
-                        + user.getActivePoint() + "\t"
-                        + dateFormat.format(user.getTime())));
-
-        userList.stream()
-                .filter(user -> user.getActivePoint() >= 60 && user.getActivePoint() < 80)
-                .sorted(Comparator.comparing(User::getTime))
-                .forEach(user -> System.out.println(user.getUserId() + "\t"
-                        + user.getActivePoint() + "\t"
-                        + dateFormat.format(user.getTime())));
-
-        userList.stream()
-                .filter(user -> user.getActivePoint() >= 80 && user.getActivePoint() < 100)
-                .sorted(Comparator.comparing(User::getTime))
-                .forEach(user -> System.out.println(user.getUserId() + "\t"
-                        + user.getActivePoint() + "\t"
-                        + dateFormat.format(user.getTime())));
-
-        userList.stream()
-                .filter(user -> user.getActivePoint() >= 100 && user.getActivePoint() < 120)
-                .sorted(Comparator.comparing(User::getTime))
-                .forEach(user -> System.out.println(user.getUserId() + "\t"
-                        + user.getActivePoint() + "\t"
-                        + dateFormat.format(user.getTime())));
-
-        userList.stream()
-                .filter(user -> user.getActivePoint() >= 120 && user.getActivePoint() < 140)
-                .sorted(Comparator.comparing(User::getTime))
-                .forEach(user -> System.out.println(user.getUserId() + "\t"
-                        + user.getActivePoint() + "\t"
-                        + dateFormat.format(user.getTime())));
-
-        userList.stream()
-                .filter(user -> user.getActivePoint() >= 140 && user.getActivePoint() < 160)
-                .sorted(Comparator.comparing(User::getTime))
-                .forEach(user -> System.out.println(user.getUserId() + "\t"
-                        + user.getActivePoint() + "\t"
-                        + dateFormat.format(user.getTime())));
-
-        userList.stream()
-                .filter(user -> user.getActivePoint() >= 160)
-                .sorted(Comparator.comparing(User::getTime))
-                .forEach(user -> System.out.println(user.getUserId() + "\t"
-                        + user.getActivePoint() + "\t"
-                        + dateFormat.format(user.getTime())));
+//        userList.stream()
+//                .filter(user -> user.getActivePoint() >= 100 && user.getActivePoint() < 120)
+//                .sorted(Comparator.comparing(User::getTime))
+//                .forEach(user -> System.out.println(user.getUserId() + "\t"
+//                        + user.getActivePoint() + "\t"
+//                        + dateFormat.format(user.getTime())));
+//
+//        userList.stream()
+//                .filter(user -> user.getActivePoint() >= 120 && user.getActivePoint() < 140)
+//                .sorted(Comparator.comparing(User::getTime))
+//                .forEach(user -> System.out.println(user.getUserId() + "\t"
+//                        + user.getActivePoint() + "\t"
+//                        + dateFormat.format(user.getTime())));
+//
+//        userList.stream()
+//                .filter(user -> user.getActivePoint() >= 140 && user.getActivePoint() < 160)
+//                .sorted(Comparator.comparing(User::getTime))
+//                .forEach(user -> System.out.println(user.getUserId() + "\t"
+//                        + user.getActivePoint() + "\t"
+//                        + dateFormat.format(user.getTime())));
+//
+//        userList.stream()
+//                .filter(user -> user.getActivePoint() >= 160)
+//                .sorted(Comparator.comparing(User::getTime))
+//                .forEach(user -> System.out.println(user.getUserId() + "\t"
+//                        + user.getActivePoint() + "\t"
+//                        + dateFormat.format(user.getTime())));
 
 
     }
