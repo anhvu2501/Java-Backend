@@ -1,13 +1,14 @@
-package User;
-
-import java.util.Date;
+package user;
 
 public class User {
     private String userId;
     private int activePoint;
     private long time;
 
-    public User (String userId, int activePoint, long time) {
+    public User() {
+    }
+
+    public User(String userId, int activePoint, long time) {
         this.userId = userId;
         this.activePoint = activePoint;
         this.time = time;
@@ -21,9 +22,22 @@ public class User {
         return activePoint;
     }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setActivePoint(int activePoint) {
+        this.activePoint = activePoint;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
     public long getTime() {
         return time;
     }
+
 
     @Override
     public String toString() {
