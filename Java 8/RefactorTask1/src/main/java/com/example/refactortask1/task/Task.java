@@ -3,7 +3,6 @@ package com.example.refactortask1.task;
 import com.example.refactortask1.data.pojo.User;
 import com.example.refactortask1.data.response.DatePoint;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
@@ -215,8 +214,8 @@ public class Task {
         long dateMilliseconds = date.getTime();
         System.out.println(dateMilliseconds);
         List<Long> timeList = userList.stream()
-                .filter(user -> user.getTime() >= dateMilliseconds)
-                .map(user -> user.getTime())
+                .map(User::getTime)
+                .filter(time -> time >= dateMilliseconds)
                 .distinct()
                 .sorted(Comparator.comparing(aLong -> aLong))
                 .collect(toList());

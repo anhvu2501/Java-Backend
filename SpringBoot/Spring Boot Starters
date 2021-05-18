@@ -1,0 +1,18 @@
+Spring Boot provides a number of starters that allow us to add jars in the classpath. Spring Boot Starters are the dependency descriptors
+In the Spring Boot Framework, all the starters follow a similar naming pattern: spring-boot-starter-*, where * denotes a particular type of application
+
+SPRING BOOT STARTER PARENT
+The spring-boot-starter-parent is a project starter. It provides default configurations for our applications. It is used internally by all dependencies. All Spring Boot projects use spring-boot-starter-parent as a parent in pom.xml file.
+The spring-boot-starter-parent inherits dependency management from spring-boot-dependencies. Only need to specify the Spring Boot version number. If there is a requirement of the additional starter, we can safely omit the version number.
+
+SPRING BOOT STARTER WEB
+Two important features of spring-boot-starter-web:
+- It is compatible for web dev
+- Auto configuration
+Starter of Spring web uses Spring MVC, REST and Tomcat as a default embedded server. The single spring-boot-started-web dependency transitively pulls in all dependencies related to web development. It also reduces the build dependency count. 
+The spring-boot-starter-web auto-configures:
+- Dispatcher Servlet
+- Error Page
+- Web JARs for managing the static dependencies
+- Embedded servlet container
+
