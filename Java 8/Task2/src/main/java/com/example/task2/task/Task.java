@@ -185,18 +185,18 @@ public class Task {
                         .setPoint(e.getValue()))
                 .collect(toList());
         listDatePoint.forEach(System.out::println);
-//
-//        Map<String, Long> countPosts = posts.stream()
-//                .collect(groupingBy(Post::getOwnerId, counting()));
-//
-//        Map<String, Long> countComments = comments.stream()
-//                .collect(groupingBy(Comment::getOwnerId, counting()));
-//
-////        countPosts.forEach((s, aLong) -> System.out.println("User ID: " + s + " Post Point: " + aLong));
-////        countComments.forEach((s, aLong) -> System.out.println("User ID: " + s + " Comment Point: " + aLong));
-//        Map<String, Long> mergedPoint = Stream.of(countPosts, countComments)
-//                .flatMap(map -> map.entrySet().stream())
-//                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, Long::sum));
+
+        Map<String, Long> countPosts = posts.stream()
+                .collect(groupingBy(Post::getOwnerId, counting()));
+
+        Map<String, Long> countComments = comments.stream()
+                .collect(groupingBy(Comment::getOwnerId, counting()));
+
+//        countPosts.forEach((s, aLong) -> System.out.println("User ID: " + s + " Post Point: " + aLong));
+//        countComments.forEach((s, aLong) -> System.out.println("User ID: " + s + " Comment Point: " + aLong));
+        Map<String, Long> mergedPoint = Stream.of(countPosts, countComments)
+                .flatMap(map -> map.entrySet().stream())
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, Long::sum));
 //
 //        Map<String, List<Long>> datePosts = posts.stream()
 //                .collect(groupingBy(Post::getOwnerId, mapping(Post::getCreationTime, toList())));
