@@ -1,0 +1,10 @@
+database:
+  mysql:
+    datasource:
+      jdbc-url: jdbc:mysql://localhost:3306/comics_admin
+      username: developer
+      password: 123456aA
+      type: com.zaxxer.hikari.HikariDataSource
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        idle-timeout: 30000

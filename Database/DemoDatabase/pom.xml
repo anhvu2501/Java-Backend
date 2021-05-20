@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>Task2</artifactId>
+    <artifactId>demoShop</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Task2</name>
+    <name>demoShop</name>
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>11</java.version>
@@ -21,11 +21,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>3.3.1</version>
-        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -36,16 +32,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>net.minidev</groupId>
-            <artifactId>json-smart</artifactId>
-            <version>2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -68,10 +54,6 @@
             <groupId>org.jooq</groupId>
             <artifactId>jooq-meta</artifactId>
             <version>3.14.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jooq</artifactId>
         </dependency>
     </dependencies>
 
@@ -119,7 +101,7 @@
                                     <pojos>true</pojos>
                                 </generate>
                                 <target>
-                                    <packageName>com.example.task2</packageName>
+                                    <packageName>com.example.demoshop</packageName>
                                     <directory>target/generated-sources/jooq</directory>
                                 </target>
                             </generator>
