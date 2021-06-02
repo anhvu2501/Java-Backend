@@ -10,11 +10,11 @@ public interface ITagsRepository {
 
     List<Tags> findByIds(List<String> id);
 
-    Tags insert(Tags tags);
+    void insert(Tags tags);
 
     void insertMany(List<Tags> tags);
 
-    Tags update(Tags tags);
+    void update(Tags tags, String id);
 
     void deleteById(String id);
 
