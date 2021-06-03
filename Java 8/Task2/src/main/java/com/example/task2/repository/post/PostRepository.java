@@ -1,11 +1,17 @@
 package com.example.task2.repository.post;
 
 import com.example.task2.tables.pojos.Post;
+import com.example.task2.tables.records.PostRecord;
 import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.InsertSetMoreStep;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.task2.Tables.POST;
 
@@ -30,44 +36,42 @@ public class PostRepository implements IPostRepository {
     public List<Post> findByIds(List<String> ids) {
         return dslContext.select()
                 .from(POST)
-                .where(String.valueOf(ids.stream().filter(s -> s.equals(POST.ID))))
+                .where(POST.ID.in(ids))
                 .fetchInto(Post.class);
     }
 
     @Override
     public void insert(Post post) {
+        Map<Field<?>, Object> fieldObjectMap = getFieldObjectMap(post);
         dslContext.insertInto(POST)
-                .set(POST.ID, post.getId())
-                .set(POST.PUBLISHER_ID, post.getPublisherId())
-                .set(POST.ACCOUNT_ID, post.getAccountId())
-                .set(POST.DATE, post.getDate())
-                .set(POST.COMIC_ID, post.getComicId())
-                .set(POST.CHAPTER_ID, post.getChapterId())
+                .set(fieldObjectMap)
                 .execute();
+    }
+
+    private Map<Field<?>, Object> getFieldObjectMap(Post post) {
+        Map<Field<?>, Object> fieldObjectMap = new HashMap<>();
+        fieldObjectMap.put(POST.ID, post.getId());
+        fieldObjectMap.put(POST.PUBLISHER_ID, post.getPublisherId());
+        fieldObjectMap.put(POST.ACCOUNT_ID, post.getAccountId());
+        fieldObjectMap.put(POST.DATE, post.getDate());
+        fieldObjectMap.put(POST.COMIC_ID, post.getComicId());
+        fieldObjectMap.put(POST.CHAPTER_ID, post.getChapterId());
+        return fieldObjectMap;
     }
 
     @Override
     public void insertMany(List<Post> posts) {
-        posts.stream()
+        List<InsertSetMoreStep<PostRecord>> insertSetMoreSteps = posts.stream()
                 .map(post -> dslContext.insertInto(POST)
-                        .set(POST.ID, post.getId())
-                        .set(POST.PUBLISHER_ID, post.getPublisherId())
-                        .set(POST.ACCOUNT_ID, post.getAccountId())
-                        .set(POST.DATE, post.getDate())
-                        .set(POST.COMIC_ID, post.getComicId())
-                        .set(POST.CHAPTER_ID, post.getChapterId())
-                        .execute());
+                        .set(getFieldObjectMap(post)))
+                .collect(Collectors.toList());
+        dslContext.batch(insertSetMoreSteps).execute();
     }
 
     @Override
     public void update(Post post, String id) {
         dslContext.update(POST)
-                .set(POST.ID, post.getId())
-                .set(POST.PUBLISHER_ID, post.getPublisherId())
-                .set(POST.ACCOUNT_ID, post.getAccountId())
-                .set(POST.DATE, post.getDate())
-                .set(POST.COMIC_ID, post.getComicId())
-                .set(POST.CHAPTER_ID, post.getChapterId())
+                .set(getFieldObjectMap(post))
                 .where(POST.ID.eq(id))
                 .execute();
     }
