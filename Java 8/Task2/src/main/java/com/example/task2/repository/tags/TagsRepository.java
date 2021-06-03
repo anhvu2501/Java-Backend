@@ -1,11 +1,17 @@
 package com.example.task2.repository.tags;
 
 import com.example.task2.tables.pojos.Tags;
+import com.example.task2.tables.records.TagsRecord;
 import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.InsertSetMoreStep;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.task2.Tables.TAGS;
 
@@ -27,38 +33,42 @@ public class TagsRepository implements ITagsRepository {
     }
 
     @Override
-    public List<Tags> findByIds(List<String> id) {
+    public List<Tags> findByIds(List<String> ids) {
         return dslContext.select()
                 .from(TAGS)
-                .where(String.valueOf(id.stream().filter(s -> s.equals(TAGS.ID))))
+                .where(TAGS.ID.in(ids))
                 .fetchInto(Tags.class);
+    }
+
+    private Map<Field<?>, Object> getFieldObjectMap(Tags tags) {
+        Map<Field<?>, Object> fieldObjectMap = new HashMap<>();
+        fieldObjectMap.put(TAGS.ID, tags.getId());
+        fieldObjectMap.put(TAGS.DESCRIPTION, tags.getDescription());
+        fieldObjectMap.put(TAGS.NAME, tags.getName());
+        return fieldObjectMap;
     }
 
     @Override
     public void insert(Tags tags) {
+        Map<Field<?>, Object> fieldObjectMap = getFieldObjectMap(tags);
         dslContext.insertInto(TAGS)
-                .set(TAGS.ID, tags.getId())
-                .set(TAGS.DESCRIPTION, tags.getDescription())
-                .set(TAGS.NAME, tags.getName())
+                .set(fieldObjectMap)
                 .execute();
     }
 
     @Override
     public void insertMany(List<Tags> tags) {
-        tags.stream()
+        List<InsertSetMoreStep<TagsRecord>> insertSetMoreSteps = tags.stream()
                 .map(tags1 -> dslContext.insertInto(TAGS)
-                        .set(TAGS.ID, tags1.getId())
-                        .set(TAGS.NAME, tags1.getName())
-                        .set(TAGS.DESCRIPTION, tags1.getDescription())
-                        .execute());
+                        .set(getFieldObjectMap(tags1)))
+                .collect(Collectors.toList());
+        dslContext.batch(insertSetMoreSteps).execute();
     }
 
     @Override
     public void update(Tags tags, String id) {
         dslContext.update(TAGS)
-                .set(TAGS.ID, tags.getId())
-                .set(TAGS.NAME, tags.getName())
-                .set(TAGS.DESCRIPTION, tags.getDescription())
+                .set(getFieldObjectMap(tags))
                 .where(TAGS.ID.eq(id))
                 .execute();
     }

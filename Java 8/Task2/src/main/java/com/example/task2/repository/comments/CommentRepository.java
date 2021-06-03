@@ -2,11 +2,17 @@ package com.example.task2.repository.comments;
 
 
 import com.example.task2.tables.pojos.Comments;
+import com.example.task2.tables.records.CommentsRecord;
 import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.InsertSetMoreStep;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.task2.Tables.COMMENTS;
 
@@ -31,38 +37,40 @@ public class CommentRepository implements ICommentRepository {
     public List<Comments> findByIds(List<String> ids) {
         return dslContext.select()
                 .from(COMMENTS)
-                .where(String.valueOf(ids.stream().filter(s -> s.equals(COMMENTS.ID))))
+                .where(COMMENTS.ID.in(ids))
                 .fetchInto(Comments.class);
     }
 
     @Override
     public void insert(Comments comment) {
+        Map<Field<?>, Object> fieldObjectMap = getFieldObjectMap(comment);
         dslContext.insertInto(COMMENTS)
-                .set(COMMENTS.ID, comment.getId())
-                .set(COMMENTS.COMIC_ID, comment.getComicId())
-                .set(COMMENTS.DATE, comment.getDate())
-                .set(COMMENTS.CHAPTER_ID, comment.getChapterId())
+                .set(fieldObjectMap)
                 .execute();
+    }
+
+    private Map<Field<?>, Object> getFieldObjectMap(Comments comment) {
+        Map<Field<?>, Object> fieldObjectMap = new HashMap<>();
+        fieldObjectMap.put(COMMENTS.ID, comment.getId());
+        fieldObjectMap.put(COMMENTS.COMIC_ID, comment.getComicId());
+        fieldObjectMap.put(COMMENTS.DATE, comment.getDate());
+        fieldObjectMap.put(COMMENTS.CHAPTER_ID, comment.getChapterId());
+        return fieldObjectMap;
     }
 
     @Override
     public void insertMany(List<Comments> comments) {
-        comments.stream()
+        List<InsertSetMoreStep<CommentsRecord>> insertSetMoreSteps = comments.stream()
                 .map(comment -> dslContext.insertInto(COMMENTS)
-                        .set(COMMENTS.ID, comment.getId())
-                        .set(COMMENTS.COMIC_ID, comment.getComicId())
-                        .set(COMMENTS.DATE, comment.getDate())
-                        .set(COMMENTS.CHAPTER_ID, comment.getChapterId())
-                        .execute());
+                        .set(getFieldObjectMap(comment)))
+                .collect(Collectors.toList());
+        dslContext.batch(insertSetMoreSteps).execute();
     }
 
     @Override
     public void update(Comments comment, String id) {
         dslContext.update(COMMENTS)
-                .set(COMMENTS.ID, comment.getId())
-                .set(COMMENTS.COMIC_ID, comment.getComicId())
-                .set(COMMENTS.DATE, comment.getDate())
-                .set(COMMENTS.CHAPTER_ID, comment.getChapterId())
+                .set(getFieldObjectMap(comment))
                 .where(COMMENTS.ID.eq(id))
                 .execute();
     }

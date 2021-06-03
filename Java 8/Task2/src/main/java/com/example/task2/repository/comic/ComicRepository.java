@@ -1,10 +1,16 @@
 package com.example.task2.repository.comic;
 
 import com.example.task2.tables.pojos.Comic;
+import com.example.task2.tables.records.ComicRecord;
 import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.InsertSetMoreStep;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.task2.Tables.COMIC;
 
@@ -25,59 +31,49 @@ public class ComicRepository implements IComicRepository {
     }
 
     @Override
-    public List<Comic> findByIds(List<String> id) {
+    public List<Comic> findByIds(List<String> ids) {
         return dslContext.select()
                 .from(COMIC)
-                .where(String.valueOf(id.stream().filter(s -> s.equals(COMIC.ID))))
+                .where(COMIC.ID.in(ids))
                 .fetchInto(Comic.class);
     }
 
     @Override
     public void insert(Comic comic) {
+        Map<Field<?>, Object> fieldObjectMap = getFieldObjectMap(comic);
         dslContext.insertInto(COMIC)
-                .set(COMIC.ID, comic.getId())
-                .set(COMIC.NAME, comic.getName())
-                .set(COMIC.AUTHOR_ID, comic.getAuthorId())
-                .set(COMIC.PUBLISHER_ID, comic.getPublisherId())
-                .set(COMIC.STATUS, comic.getStatus())
-                .set(COMIC.FIRST_UPLOADED, comic.getFirstUploaded())
-                .set(COMIC.LAST_UPLOADED, comic.getLastUploaded())
-                .set(COMIC.CURRENT_CHAPTER, comic.getCurrentChapter())
-                .set(COMIC.TOTAL_VIEW, comic.getTotalView())
-                .set(COMIC.RATING, comic.getRating())
+                .set(fieldObjectMap)
                 .execute();
+    }
+
+    private Map<Field<?>, Object> getFieldObjectMap(Comic comic) {
+        Map<Field<?>, Object> fieldObjectMap = new HashMap<>();
+        fieldObjectMap.put(COMIC.ID, comic.getId());
+        fieldObjectMap.put(COMIC.NAME, comic.getName());
+        fieldObjectMap.put(COMIC.AUTHOR_ID, comic.getAuthorId());
+        fieldObjectMap.put(COMIC.PUBLISHER_ID, comic.getPublisherId());
+        fieldObjectMap.put(COMIC.STATUS, comic.getStatus());
+        fieldObjectMap.put(COMIC.FIRST_UPLOADED, comic.getFirstUploaded());
+        fieldObjectMap.put(COMIC.LAST_UPLOADED, comic.getLastUploaded());
+        fieldObjectMap.put(COMIC.CURRENT_CHAPTER, comic.getCurrentChapter());
+        fieldObjectMap.put(COMIC.TOTAL_VIEW, comic.getTotalView());
+        fieldObjectMap.put(COMIC.RATING, comic.getRating());
+        return fieldObjectMap;
     }
 
     @Override
     public void insertMany(List<Comic> comics) {
-        comics.stream()
+        List<InsertSetMoreStep<ComicRecord>> insertSetMoreSteps = comics.stream()
                 .map(comic -> dslContext.insertInto(COMIC)
-                        .set(COMIC.ID, comic.getId())
-                        .set(COMIC.NAME, comic.getName())
-                        .set(COMIC.AUTHOR_ID, comic.getAuthorId())
-                        .set(COMIC.PUBLISHER_ID, comic.getPublisherId())
-                        .set(COMIC.STATUS, comic.getStatus())
-                        .set(COMIC.FIRST_UPLOADED, comic.getFirstUploaded())
-                        .set(COMIC.LAST_UPLOADED, comic.getLastUploaded())
-                        .set(COMIC.CURRENT_CHAPTER, comic.getCurrentChapter())
-                        .set(COMIC.TOTAL_VIEW, comic.getTotalView())
-                        .set(COMIC.RATING, comic.getRating())
-                        .execute());
+                        .set(getFieldObjectMap(comic)))
+                .collect(Collectors.toList());
+        dslContext.batch(insertSetMoreSteps).execute();
     }
 
     @Override
     public void update(Comic comic, String id) {
         dslContext.update(COMIC)
-                .set(COMIC.ID, comic.getId())
-                .set(COMIC.NAME, comic.getName())
-                .set(COMIC.AUTHOR_ID, comic.getAuthorId())
-                .set(COMIC.PUBLISHER_ID, comic.getPublisherId())
-                .set(COMIC.STATUS, comic.getStatus())
-                .set(COMIC.FIRST_UPLOADED, comic.getFirstUploaded())
-                .set(COMIC.LAST_UPLOADED, comic.getLastUploaded())
-                .set(COMIC.CURRENT_CHAPTER, comic.getCurrentChapter())
-                .set(COMIC.TOTAL_VIEW, comic.getTotalView())
-                .set(COMIC.RATING, comic.getRating())
+                .set(getFieldObjectMap(comic))
                 .where(COMIC.ID.eq(id))
                 .execute();
     }

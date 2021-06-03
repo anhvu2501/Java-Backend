@@ -1,11 +1,17 @@
 package com.example.task2.repository.publish;
 
 import com.example.task2.tables.pojos.Publishment;
+import com.example.task2.tables.records.PublishmentRecord;
 import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.InsertSetMoreStep;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.task2.Tables.PUBLISHMENT;
 
@@ -30,38 +36,40 @@ public class PublishRepository implements IPublishRepository {
     public List<Publishment> findByIds(List<String> ids) {
         return dslContext.select()
                 .from(PUBLISHMENT)
-                .where(String.valueOf(ids.stream().filter(s -> s.equals(PUBLISHMENT))))
+                .where(PUBLISHMENT.ID.in(ids))
                 .fetchInto(Publishment.class);
     }
 
     @Override
     public void insert(Publishment publishment) {
+        Map<Field<?>, Object> fieldObjectMap = getFieldObjectMap(publishment);
         dslContext.insertInto(PUBLISHMENT)
-                .set(PUBLISHMENT.ID, publishment.getId())
-                .set(PUBLISHMENT.AUTHOR_ID, publishment.getAuthorId())
-                .set(PUBLISHMENT.PUBLISHER_ID, publishment.getPublisherId())
-                .set(PUBLISHMENT.COMIC_ID, publishment.getComicId())
+                .set(fieldObjectMap)
                 .execute();
+    }
+
+    private Map<Field<?>, Object> getFieldObjectMap(Publishment publishment) {
+        Map<Field<?>, Object> fieldObjectMap = new HashMap<>();
+        fieldObjectMap.put(PUBLISHMENT.ID, publishment.getId());
+        fieldObjectMap.put(PUBLISHMENT.AUTHOR_ID, publishment.getAuthorId());
+        fieldObjectMap.put(PUBLISHMENT.PUBLISHER_ID, publishment.getPublisherId());
+        fieldObjectMap.put(PUBLISHMENT.COMIC_ID, publishment.getComicId());
+        return fieldObjectMap;
     }
 
     @Override
     public void insertMany(List<Publishment> publishments) {
-        publishments.stream()
+        List<InsertSetMoreStep<PublishmentRecord>> insertSetMoreSteps = publishments.stream()
                 .map(publishment -> dslContext.insertInto(PUBLISHMENT)
-                        .set(PUBLISHMENT.ID, publishment.getId())
-                        .set(PUBLISHMENT.AUTHOR_ID, publishment.getAuthorId())
-                        .set(PUBLISHMENT.PUBLISHER_ID, publishment.getPublisherId())
-                        .set(PUBLISHMENT.COMIC_ID, publishment.getComicId())
-                        .execute());
+                        .set(getFieldObjectMap(publishment)))
+                .collect(Collectors.toList());
+        dslContext.batch(insertSetMoreSteps).execute();
     }
 
     @Override
     public void update(Publishment publishment, String id) {
         dslContext.update(PUBLISHMENT)
-                .set(PUBLISHMENT.ID, publishment.getId())
-                .set(PUBLISHMENT.AUTHOR_ID, publishment.getAuthorId())
-                .set(PUBLISHMENT.PUBLISHER_ID, publishment.getPublisherId())
-                .set(PUBLISHMENT.COMIC_ID, publishment.getComicId())
+                .set(getFieldObjectMap(publishment))
                 .where(PUBLISHMENT.ID.eq(id))
                 .execute();
     }

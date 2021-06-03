@@ -1,11 +1,17 @@
 package com.example.task2.repository.likes;
 
 import com.example.task2.tables.pojos.Likes;
+import com.example.task2.tables.records.LikesRecord;
 import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.InsertSetMoreStep;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.task2.Tables.LIKES;
 
@@ -30,36 +36,40 @@ public class LikeRepository implements ILikeRepository {
     public List<Likes> findByIds(List<String> ids) {
         return dslContext.select()
                 .from(LIKES)
-                .where(String.valueOf(ids.stream().filter(s -> s.equals(LIKES.ID))))
+                .where(LIKES.ID.in(ids))
                 .fetchInto(Likes.class);
     }
 
     @Override
     public void insert(Likes likes) {
+        Map<Field<?>, Object> fieldObjectMap = getFieldObjectMap(likes);
         dslContext.insertInto(LIKES)
-                .set(LIKES.ID, likes.getId())
-                .set(LIKES.USER_ID, likes.getUserId())
-                .set(LIKES.DATE, likes.getDate())
+                .set(fieldObjectMap)
                 .execute();
+    }
+
+    private Map<Field<?>, Object> getFieldObjectMap(Likes likes) {
+        Map<Field<?>, Object> fieldObjectMap = new HashMap<>();
+        fieldObjectMap.put(LIKES.ID, likes.getId());
+        fieldObjectMap.put(LIKES.USER_ID, likes.getUserId());
+        fieldObjectMap.put(LIKES.DATE, likes.getDate());
+        return fieldObjectMap;
     }
 
     @Override
     public void insertMany(List<Likes> likes) {
-        likes.stream()
+        List<InsertSetMoreStep<LikesRecord>> insertSetMoreSteps = likes.stream()
                 .map(like -> dslContext.insertInto(LIKES)
-                        .set(LIKES.ID, like.getId())
-                        .set(LIKES.USER_ID, like.getUserId())
-                        .set(LIKES.DATE, like.getDate())
-                        .execute());
+                        .set(getFieldObjectMap(like)))
+                .collect(Collectors.toList());
+        dslContext.batch(insertSetMoreSteps).execute();
 
     }
 
     @Override
     public void update(Likes likes, String id) {
         dslContext.update(LIKES)
-                .set(LIKES.ID, likes.getId())
-                .set(LIKES.USER_ID, likes.getUserId())
-                .set(LIKES.DATE, likes.getDate())
+                .set(getFieldObjectMap(likes))
                 .where(LIKES.ID.eq(id))
                 .execute();
     }

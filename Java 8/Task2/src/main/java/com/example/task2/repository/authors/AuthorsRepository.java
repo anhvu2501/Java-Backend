@@ -1,10 +1,16 @@
 package com.example.task2.repository.authors;
 
 import com.example.task2.tables.pojos.Authors;
+import com.example.task2.tables.records.AuthorsRecord;
 import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.InsertSetMoreStep;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.task2.Tables.AUTHORS;
 
@@ -25,41 +31,43 @@ public class AuthorsRepository implements IAuthorsRepository {
     }
 
     @Override
-    public List<Authors> findByIds(List<String> id) {
+    public List<Authors> findByIds(List<String> ids) {
         return dslContext.select()
                 .from(AUTHORS)
-                .where(String.valueOf(id.stream().filter(s -> s.equals(AUTHORS.ID))))
+                .where(AUTHORS.ID.in(ids))
                 .fetchInto(Authors.class);
     }
 
     @Override
     public void insert(Authors authors) {
+        Map<Field<?>, Object> fieldObjectMap = getFieldObjectMap(authors);
         dslContext.insertInto(AUTHORS)
-                .set(AUTHORS.ID, authors.getId())
-                .set(AUTHORS.NAME, authors.getName())
-                .set(AUTHORS.NATIONALITY, authors.getNationality())
-                .set(AUTHORS.DOB, authors.getDob())
+                .set(fieldObjectMap)
                 .execute();
+    }
+
+    private Map<Field<?>, Object> getFieldObjectMap(Authors authors) {
+        Map<Field<?>, Object> fieldObjectMap = new HashMap<>();
+        fieldObjectMap.put(AUTHORS.ID, authors.getId());
+        fieldObjectMap.put(AUTHORS.NAME, authors.getName());
+        fieldObjectMap.put(AUTHORS.NATIONALITY, authors.getNationality());
+        fieldObjectMap.put(AUTHORS.DOB, authors.getDob());
+        return fieldObjectMap;
     }
 
     @Override
     public void insertMany(List<Authors> authors) {
-        authors.stream()
+        List<InsertSetMoreStep<AuthorsRecord>> insertSetMoreSteps = authors.stream()
                 .map(authors1 -> dslContext.insertInto(AUTHORS)
-                        .set(AUTHORS.ID, authors1.getId())
-                        .set(AUTHORS.NAME, authors1.getName())
-                        .set(AUTHORS.NATIONALITY, authors1.getNationality())
-                        .set(AUTHORS.DOB, authors1.getDob())
-                        .execute());
+                        .set(getFieldObjectMap(authors1)))
+                .collect(Collectors.toList());
+        dslContext.batch(insertSetMoreSteps).execute();
     }
 
     @Override
     public void update(Authors authors, String id) {
         dslContext.update(AUTHORS)
-                .set(AUTHORS.ID, authors.getId())
-                .set(AUTHORS.NAME, authors.getName())
-                .set(AUTHORS.NATIONALITY, authors.getNationality())
-                .set(AUTHORS.DOB, authors.getDob())
+                .set(getFieldObjectMap(authors))
                 .where(AUTHORS.ID.eq(id))
                 .execute();
     }
