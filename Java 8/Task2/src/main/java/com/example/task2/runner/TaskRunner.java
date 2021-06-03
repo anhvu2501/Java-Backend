@@ -19,14 +19,14 @@ public class TaskRunner {
         this.tagsRepository = tagsRepository;
     }
 
-//    @PostConstruct
+    //    @PostConstruct
     public void runner() throws IOException {
         task.handleTask();
     }
 
     @PostConstruct
-    public void test(){
-        Optional<Tags> aa = tagsRepository.find("aa");
+    public void test() {
+        Optional<Tags> aa = tagsRepository.findById("aa");
         System.out.println("aa");
     }
 }
